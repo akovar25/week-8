@@ -8,16 +8,32 @@ class MarkovText:
         self.term_dict = None
 
     def get_term_dict(self):
+        """
+        Builds a term dictionary of Markov states from the corpus.
+        Each key is a token that appears before the final token,
+        and the value is a list of tokens that follow it.
+        """
         term_dict = defaultdict(list)
         for i in range(len(self.corpus) - 1):
             current_token = self.corpus[i]
             next_token = self.corpus[i + 1]
             term_dict[current_token].append(next_token)
+
         # Only include tokens that have followers
-        self.term_dict = {k: v for k, v in term_dict.items() if v}
+        self.term_dict = dict(term_dict)
         return None
 
     def generate(self, seed_term=None, term_count=15):
+        """
+        Generate a sentence using the Markov property.
+
+        Parameters:
+            seed_term (str): Optional starting token. If None, choose randomly.
+            term_count (int): Number of tokens to generate.
+
+        Returns:
+            str: Generated sentence.
+        """
         if self.term_dict is None:
             self.get_term_dict()
         if not self.term_dict:
@@ -31,10 +47,13 @@ class MarkovText:
             current_term = random.choice(list(self.term_dict.keys()))
 
         output = [current_term]
-        for _ in range(term_count - 1):
+
+        while len(output) < term_count:
             next_terms = self.term_dict.get(current_term)
             if not next_terms:
-                break
+                # Restart from a random valid token if chain ends early
+                current_term = random.choice(list(self.term_dict.keys()))
+                continue
             current_term = np.random.choice(next_terms)
             output.append(current_term)
 
