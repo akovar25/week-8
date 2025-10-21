@@ -13,7 +13,8 @@ class MarkovText:
             current_token = self.corpus[i]
             next_token = self.corpus[i + 1]
             term_dict[current_token].append(next_token)
-        self.term_dict = dict(term_dict)
+        # Only include tokens that have followers
+        self.term_dict = {k: v for k, v in term_dict.items() if v}
         return None
 
     def generate(self, seed_term=None, term_count=15):
