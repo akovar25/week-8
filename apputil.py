@@ -1,14 +1,14 @@
 import numpy as np
 import random
-
 from collections import defaultdict
 
-
-class MarkovText(object):
-
+class MarkovText:
     def __init__(self, corpus):
+        """
+        Initialize with a tokenized corpus.
+        """
         self.corpus = corpus
-        self.term_dict = None  # you'll need to build this
+        self.term_dict = None
 
     def get_term_dict(self):
         """
@@ -25,43 +25,41 @@ class MarkovText(object):
         self.term_dict = dict(term_dict)
         return None
 
+    def generate(self, seed_term=None, term_count=15):
+        """
+        Generate a sentence using the Markov property.
 
+        Parameters:
+            seed_term (str): Optional starting token. If None, choose randomly.
+            term_count (int): Number of tokens to generate.
 
-def generate(self, seed_term=None, term_count=15):
-    """
-    Generate a sentence using the Markov property.
+        Returns:
+            str: Generated sentence.
+        """
+        # Ensure term_dict is built
+        if self.term_dict is None:
+            self.get_term_dict()
 
-    Parameters:
-        seed_term (str): Optional starting token. If None, choose randomly.
-        term_count (int): Number of tokens to generate.
+        if not self.term_dict:
+            return ""
 
-    Returns:
-        str: Generated sentence.
-    """
-    # Ensure term_dict is built
-    if self.term_dict is None:
-        self.get_term_dict()
+        # Validate or choose seed term
+        if seed_term is not None:
+            if seed_term not in self.term_dict:
+                raise ValueError(f"Seed term '{seed_term}' not found in corpus.")
+            current_term = seed_term
+        else:
+            current_term = random.choice(list(self.term_dict.keys()))
 
-    if not self.term_dict:
-        return ""
+        output = [current_term]
 
-    # Validate or choose seed term
-    if seed_term is not None:
-        if seed_term not in self.term_dict:
-            raise ValueError(f"Seed term '{seed_term}' not found in corpus.")
-        current_term = seed_term
-    else:
-        current_term = random.choice(list(self.term_dict.keys()))
+        for _ in range(term_count - 1):
+            next_terms = self.term_dict.get(current_term)
 
-    output = [current_term]
+            if not next_terms:
+                break  # No next token available, end early
 
-    for _ in range(term_count - 1):
-        next_terms = self.term_dict.get(current_term)
+            current_term = np.random.choice(next_terms)
+            output.append(current_term)
 
-        if not next_terms:
-            break  # No next token available, end early
-
-        current_term = np.random.choice(next_terms)
-        output.append(current_term)
-
-    return " ".join(output)
+        return " ".join(output)
