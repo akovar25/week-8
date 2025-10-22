@@ -7,10 +7,13 @@ class MarkovText(object):
 
     def __init__(self, corpus):
         """
-        This function initializes the later functions
+        Initialize the MarkovText object with a text corpus.
 
-        Args:
-            corpus (str): A string containing the text corpus that we build the chain with
+        Raises:
+            None
+
+        Parameters:
+            corpus (str): The text corpus to build the Markov model from.
 
         Returns:
             None
@@ -20,14 +23,15 @@ class MarkovText(object):
 
     def get_term_dict(self):
         """
-        This function builds the Markov transition dictionary from corpus.
-        The dictionary keys are unique tokens in the corpus, and each value
-        is a list of words that directly follow the key in the corpus.
-        This function updates the instance variable self.term_dict
+        Build a term dictionary mapping each word to a list of words
+        that can follow it in the corpus.
 
-        Args:
+        Raises:
             None
 
+        Parameters:
+            None
+        
         Returns:
             None
         """
@@ -49,21 +53,19 @@ class MarkovText(object):
    
     def generate(self, seed_term=None, term_count=15):
         """
-        Generate text using the Markov property based on the term dictionary.
-
-        Args:
-            seed_term (str, optional): The starting word for generation.
-                                       If None, a random word is chosen
-                                       from the term dictionary. Defaults to None.
-            term_count (int, optional): Number of words to generate. Defaults to 15.
+        Generate a sequence of words based on the Markov model.
 
         Raises:
-            ValueError: If `get_term_dict()` has not been called first.
-            ValueError: If `seed_term` is provided but not found in the corpus.
-
-        Returns:
-            str: A string of generated text containing `term_count` words
-                 or fewer if the last word has no followers in the corpus.
+            ValueError: If get_term_dict() hasn't been called yet.
+            ValueError: If seed_term is provided but not found in the corpus.
+        
+        Parameters:
+            seed_term (str, optional): The starting word for generation.
+                                        If None, a random word is chosen.
+            term_count (int): The number of words to generate.
+       
+         Returns:
+            str: A string of generated words.
         """
 
         # Error if get_term_dict() hasn't been called yet
